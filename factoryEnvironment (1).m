@@ -1,0 +1,236 @@
+function env = factoryEnvironment()
+% factoryEnvironment
+%
+% Defines and plots the fixed industrial environment.
+%
+% The environment contains only:
+%   - Initial position A
+%   - Final position B
+%   - Circular obstacles
+%   - Rectangular obstacles
+%
+% Coordinates are expressed in meters with respect to the
+% inertial reference frame {O,X,Y}.
+
+%% ================================================================
+% Environment geometry
+% ================================================================
+
+% Initial and final positions
+env.A = [2 2];
+env.B = [38 18];
+
+
+% Circular obstacles
+%
+% Each row is:
+%
+%   [x_center   y_center   radius]
+%
+env.circles = [ ...
+     6.0   17.0   1.20;
+    14.0   15.0   1.80;
+    26.0    5.0   1.70;
+    35.0    5.0   1.30 ];
+
+
+% Rectangular obstacles
+%
+% Each row is:
+%
+%   [x_min   x_max   y_min   y_max]
+%
+env.rectangles = [ ...
+     1.0    4.0   15.0   19.0;
+     7.0   11.0    0.0   10.0;
+    18.0   22.0   10.0   20.0;
+    29.0   33.0    0.0   11.0 ];
+
+
+%% ================================================================
+% Plot environment
+% ================================================================
+
+figure('Color','w');
+
+hold on;
+
+
+%% ------------------------------------------------
+% Circular obstacles
+% ------------------------------------------------
+
+theta = linspace(0,2*pi,300);
+
+for k = 1:size(env.circles,1)
+
+    xc = env.circles(k,1);
+    yc = env.circles(k,2);
+    R  = env.circles(k,3);
+
+    xCircle = xc + R*cos(theta);
+    yCircle = yc + R*sin(theta);
+
+    fill( ...
+        xCircle, ...
+        yCircle, ...
+        [0.70 0.70 0.70], ...
+        'EdgeColor','k', ...
+        'LineWidth',1.5 );
+
+end
+
+
+%% ------------------------------------------------
+% Rectangular obstacles
+% ------------------------------------------------
+
+for k = 1:size(env.rectangles,1)
+
+    xmin = env.rectangles(k,1);
+    xmax = env.rectangles(k,2);
+
+    ymin = env.rectangles(k,3);
+    ymax = env.rectangles(k,4);
+
+    rectangle( ...
+        'Position', ...
+        [xmin, ymin, xmax-xmin, ymax-ymin], ...
+        'FaceColor',[0.60 0.60 0.60], ...
+        'EdgeColor','k', ...
+        'LineWidth',1.5 );
+
+end
+
+
+%% ------------------------------------------------
+% Initial and final positions
+% ------------------------------------------------
+
+plot( ...
+    env.A(1), ...
+    env.A(2), ...
+    'o', ...
+    'MarkerSize',10, ...
+    'LineWidth',2 );
+
+plot( ...
+    env.B(1), ...
+    env.B(2), ...
+    'o', ...
+    'MarkerSize',10, ...
+    'LineWidth',2 );
+
+
+text( ...
+    env.A(1)-0.55, ...
+    env.A(2)+0.55, ...
+    '$A$', ...
+    'Interpreter','latex', ...
+    'FontSize',18 );
+
+
+text( ...
+    env.B(1)+0.40, ...
+    env.B(2), ...
+    '$B$', ...
+    'Interpreter','latex', ...
+    'FontSize',18 );
+
+
+%% ================================================================
+% Factory plotting limits
+% ================================================================
+
+axis equal;
+
+xlim([0 40]);
+ylim([0 20]);
+
+box on;
+
+grid on;
+
+
+xlabel('$x$ [m]', ...
+    'Interpreter','latex');
+
+ylabel('$y$ [m]', ...
+    'Interpreter','latex');
+
+title( ...
+    'Industrial Monitoring Environment', ...
+    'Interpreter','latex' );
+
+
+set( ...
+    gca, ...
+    'FontSize',13, ...
+    'TickLabelInterpreter','latex', ...
+    'LineWidth',1.2 );
+
+
+%% ================================================================
+% Inertial reference frame {O,X,Y}
+% ================================================================
+%
+% Draw a small reference frame near the origin.
+%
+
+O = [0.75 0.75];
+
+Lx = 3.0;
+Ly = 3.0;
+
+
+% X-axis arrow
+quiver( ...
+    O(1), ...
+    O(2), ...
+    Lx, ...
+    0, ...
+    0, ...
+    'k', ...
+    'LineWidth',1.8, ...
+    'MaxHeadSize',0.45 );
+
+
+% Y-axis arrow
+quiver( ...
+    O(1), ...
+    O(2), ...
+    0, ...
+    Ly, ...
+    0, ...
+    'k', ...
+    'LineWidth',1.8, ...
+    'MaxHeadSize',0.45 );
+
+
+% Origin label
+text( ...
+    O(1)-0.45, ...
+    O(2)-0.35, ...
+    '$O$', ...
+    'Interpreter','latex', ...
+    'FontSize',16 );
+
+
+% X label
+text( ...
+    O(1)+Lx+0.20, ...
+    O(2)-0.15, ...
+    '$X$', ...
+    'Interpreter','latex', ...
+    'FontSize',16 );
+
+
+% Y label
+text( ...
+    O(1)-0.15, ...
+    O(2)+Ly+0.25, ...
+    '$Y$', ...
+    'Interpreter','latex', ...
+    'FontSize',16 );
+
+end
